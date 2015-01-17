@@ -1,10 +1,16 @@
+#!/usr/bin/env python3
 """
 Programming in Python 2 - Chapter 4 - Excercise
 
 Interactive program that maintains a list of strings in files
 """
+from unittest.mock import patch
 import unittest
 import listkeeper
+
+
+def mocked_input(prompt):
+    return "filename"
 
 
 class TestListkeeper(unittest.TestCase):
@@ -34,6 +40,14 @@ class TestListkeeper(unittest.TestCase):
         files = ["file1.doc", "file2.xls", "file3.txt", "file4.lst", "file5.lst"]
         lst_files = listkeeper.filter_lst_files(files)
         self.assertTrue(all(['.lst' in file_name for file_name in lst_files]))
+
+    @patch('builtins.input', side_effect=mocked_input)
+    def test_prompt_file_name_returns_a_string(self, input_function):
+        """
+        prompt_filename returns a string for the filename
+        """
+        file_name = listkeeper.prompt_filename()
+        self.assertTrue(type(file_name) is str)
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
