@@ -19,13 +19,23 @@ def ask_filename():
     """
     return input("Choose filename : ")
 
+
 def add_file_extension(filename):
     if not filename.endswith(".lst"):
         filename += ".lst"
     return filename
+
 
 def create_file_list():
     files = filter_lst_files(os.listdir())
     if len(files) == 0:
         files = list(add_file_extension(ask_filename()))
     return files
+
+
+def number_items(items=None):
+    numbered_list = []
+    if items is not None:
+        for number, item in enumerate(items):
+            numbered_list.append(str(number + 1) + ": " + item)
+    return numbered_list

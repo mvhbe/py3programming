@@ -13,15 +13,23 @@ def input(prompt):
     """mock builtin function input()"""
     return "filename"
 
-def empty_dir(files):
+
+def empty_dir():
     """mock an empty directory"""
     return []
 
 
+def listdir():
+    """mock an directory with a few files"""
+    return ["file1.txt", "file2.doc", "file3.lst"]
+
+
 class TestListkeeper(unittest.TestCase):
+
     """
     Tests for the interactive program that maintains a list of strings in files
     """
+
     def test_filter_lst_files_returns_a_list(self):
         """filter_lst_files returns a list"""
         files = listkeeper.filter_lst_files([])
@@ -65,12 +73,38 @@ class TestListkeeper(unittest.TestCase):
         self.assertTrue(type(files), list)
 
     @patch('builtins.input', side_effect=input)
-    @patch("listkeeper.filter_lst_files", side_effect=empty_dir)
-    def test_create_file_list_returns_the_entered_filename_when_no_lst_files_present(self, function1, function2):
-        """create_file_list returns a an empty list when no .lst files present"""
+    @patch("os.listdir", side_effect=empty_dir)
+    def test_create_file_list_returns_the_entered_filename_when_no_lst_files_present(self, input, empty_dir):
+        """create_file_list returns the entered filename when no .lst files present"""
         files = listkeeper.create_file_list()
         expected_files = list("filename.lst")
         self.assertEqual(expected_files, files)
+
+    @patch("os.listdir", side_effect=listdir)
+    def test_create_file_list_returns_lst_files_only(self, listdir):
+        """create_file_list returns a list of only .lst files"""
+        files = listkeeper.create_file_list()
+        expected_files = ["file3.lst"]
+        self.assertEqual(expected_files, files)
+
+    def test_number_items(self):
+        """number_items returns a list of numbered items"""
+        items = listkeeper.number_items(["first item", "second item"])
+        expected_items = ["1: first item", "2: second item"]
+        self.assertTrue(all([item[0] == item[1] for item in zip(items, expected_items)]))
+
+    def test_number_items_with_no_items(self):
+        """number_items returns a empty list when no list is given"""
+        items = listkeeper.number_items()
+        expected_items = []
+        self.assertTrue(all([item[0] == item[1] for item in zip(items, expected_items)]))
+
+    def test_number_items_with_a_string(self):
+        """number_items returns a numbered list from the string"""
+        string = "help"
+        items = listkeeper.number_items(string)
+        expected_items = ["1: h", "2: e", "3: l", "4: p"]
+        self.assertTrue(all([item[0] == item[1] for item in zip(items, expected_items)]))
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
