@@ -34,8 +34,7 @@ def create_file_list():
 
 
 def number_items(items=None):
-    numbered_list = []
-    if items is not None:
-        for number, item in enumerate(items):
-            numbered_list.append(str(number + 1) + ": " + item)
-    return numbered_list
+    items = [] if items is None else items
+    return (
+        [str(number + 1) + ": " + item for number, item in enumerate(items)]
+    )
