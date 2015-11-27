@@ -34,10 +34,10 @@ def create_parser():
         default=False
     )
     parser.add_argument(
-        "paths",
+        "dirs",
         nargs="*",
-        help="The paths are optional. If not given, '.' is used.",
-        default="."
+        help="The dirs are optional. If not given, '.' is used.",
+        default=list(".")
     )
     return parser
 
@@ -45,7 +45,8 @@ def create_parser():
 def main():
     parser = create_parser()
     args = parser.parse_args()
-    self.(args)
+    print("args = ", args)
+
 
 if __name__ == "__main__":
     main()
