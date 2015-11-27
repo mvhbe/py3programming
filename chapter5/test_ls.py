@@ -40,6 +40,20 @@ class TestLs(unittest.TestCase):
         args = self.parser.parse_args()
         self.assertIn(".", args.dirs, "Optie 'dirs' niet aanwezig !")
 
+    def test_verwijdert_verborgen_bestanden(self):
+        """Functie 'remove_hidden' verwijdert verborgen bestanden/directories"""
+        expected_dirnames = []
+        dirnames = [".hidden_directory"]
+        dirnames = ls.remove_hidden(dirnames)
+        self.assertEqual(expected_dirnames, dirnames, "Verborgen bestanden niet verwijderd !")
+
+    def test_verwijdert_geen_zichtbare_bestanden(self):
+        """Functie 'remove_hidden' verwijdert geen zichtbare bestanden/directories"""
+        expected_dirnames = ["zichtbaar"]
+        dirnames = [".hidden_directory", "zichtbaar"]
+        dirnames = ls.remove_hidden(dirnames)
+        self.assertEqual(expected_dirnames, dirnames, "Verborgen bestanden niet verwijderd !")
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

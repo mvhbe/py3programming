@@ -42,6 +42,10 @@ def create_parser():
     return parser
 
 
+def remove_hidden(names):
+    return [name for name in names if not name.startswith(".")]
+
+
 def main():
     parser = create_parser()
     args = parser.parse_args()
