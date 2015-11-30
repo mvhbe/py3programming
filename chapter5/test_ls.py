@@ -1,20 +1,15 @@
 <<<<<<< HEAD
 import os.path
-=======
->>>>>>> 73ad98914cb47af5218a618c015e049241c9fbe9
 import unittest
 import ls
 
 
-<<<<<<< HEAD
 SIZE = 1365
 
 def get_size(filenam):
     return SIZE
 
 
-=======
->>>>>>> 73ad98914cb47af5218a618c015e049241c9fbe9
 class TestLs(unittest.TestCase):
 
     def setUp(self):
