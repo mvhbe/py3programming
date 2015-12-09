@@ -1,23 +1,35 @@
-import os.path
 import unittest
 import ls
+from ls import DATE_FORMAT
+from ls import FILE_SIZE_FORMAT
 
 
 SIZE = 1365
+FORMATTED_SIZE = FILE_SIZE_FORMAT.format(SIZE).replace(",", ".")
+TIME = 1449229346.5816598
+DATE_MODIFIED = "2015-12-04 11:42:26"
 
 
-def os_path_getsize(filename):
+def getsize(filename):
     return SIZE
 
 
-def os_walk(directory):
+def getmtime(filename):
+    return TIME
+
+
+def walk(directory):
     return None
+
+
+def strftime(DATE_FORMAT, time_stamp):
+    return DATE_MODIFIED
 
 
 class TestLs(unittest.TestCase):
 
     def setUp(self):
-        self.ls = ls.Ls(path_walker=os_walk, size_reader=os_path_getsize)
+        self.ls = ls.Ls(walk=walk, getsize=getsize, getmtime=getmtime, strftime=strftime)
 
     def tearDown(self):
         pass
@@ -47,14 +59,14 @@ class TestLs(unittest.TestCase):
         self.assertIn(".", self.ls.args.dirs, "Optie 'dirs' niet aanwezig !")
 
     def test_verwijdert_verborgen_bestanden(self):
-        """Functie 'remove_hidden' verwijdert verborgen bestanden/directories"""
+        """Functie '_remove_hidden' verwijdert verborgen bestanden/directories"""
         expected_dirnames = []
         dirnames = [".hidden_directory"]
         actual_dirnames = self.ls._remove_hidden(dirnames)
         self.assertEqual(expected_dirnames, actual_dirnames, "Verborgen bestanden niet verwijderd !")
 
     def test_verwijdert_geen_zichtbare_bestanden(self):
-        """Functie 'remove_hidden' verwijdert geen zichtbare bestanden/directories"""
+        """Functie '_remove_hidden' verwijdert geen zichtbare bestanden/directories"""
         expected_dirnames = ["zichtbaar"]
         dirnames = [".hidden_directory", "zichtbaar"]
         actual_dirnames = self.ls._remove_hidden(dirnames)
@@ -67,14 +79,26 @@ class TestLs(unittest.TestCase):
         actual_size = self.ls._get_file_size(file_name)
         self.assertEqual(expected_size, actual_size, "Bestandsgrootte niet correct !")
 
-    # def test_show_info_toont_size_bij_sizes_true(self):
-    #     # os.path.getsize = get_size
-    #     filename = "./ls.py"
-    #     # self.ls.args = self.parser.parse_self.ls.args()
-    #     self.ls.args.size = True
-    #     output = self.ls.show_info(filename, self.ls.args)
-    #     self.assertIn(str(SIZE), output, "Size wordt niet getoond !")
-        
+
+    def test_datum_laatste_wijziging_bestand_wordt_opgehaald(self):
+        """Functie _get_date_modified geeft datum laatste wijziging terug"""
+        file_name = "./ls.py"
+        expected_date_modified = TIME
+        actual_date_modified = self.ls._get_date_modified(file_name)
+        self.assertEqual(expected_date_modified, actual_date_modified, "Datum laatste wijziging niet correct !")
+
+    def test_format_date_modified_werk_correct(self):
+        """Functie _format_date_modified werk correct"""
+        expected_date = DATE_MODIFIED
+        actual_date = self.ls._format_date_modified(TIME)
+        self.assertEqual(expected_date, actual_date, "Datum formaat niet correct !")
+
+    def test_format_file_size__werk_correct(self):
+        """Functie _format_file_size werk correct"""
+        expected_size = FORMATTED_SIZE
+        actual_size = self.ls._format_file_size(SIZE)
+        self.assertEqual(expected_size, actual_size, "Formaat bestandsgrootte niet correct !")
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

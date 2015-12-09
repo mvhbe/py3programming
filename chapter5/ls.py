@@ -1,13 +1,20 @@
 import argparse
 import os
 import os.path
+import time
+
+
+DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
+FILE_SIZE_FORMAT = "{:10,d}"
 
 
 class Ls(object):
 
-    def __init__(self, path_walker=os.walk, size_reader=os.path.getsize):
-        self.path_walker = path_walker
-        self.size_reader = size_reader
+    def __init__(self, walk=os.walk, getsize=os.path.getsize, getmtime=os.path.getmtime, strftime=time.strftime):
+        self.walk = walk
+        self.getsize = getsize
+        self.getmtime= getmtime
+        self.strftime = strftime
         self.parser = self._create_parser()
         self.args = self.parser.parse_args()
 
@@ -22,7 +29,7 @@ class Ls(object):
         parser.add_argument(
             "-m", "--modified",
             action="store_true",
-            help="show hidden last modified date/time [default: off]",
+            help="show last modified date/time [default: off]",
             default=False
         )
         parser.add_argument(
@@ -52,15 +59,21 @@ class Ls(object):
         return parser
 
     def _get_file_size(self, file_name):
-        return self.size_reader(file_name)
+        return self.getsize(file_name)
+
+    def _get_date_modified(self, file_name):
+        return self.getmtime(file_name)
 
     def _remove_hidden(self, names):
         return [name for name in names if not name.startswith(".")]
 
-    def show_info(self, filename, args):
-        return ""
-    
-    
+    def _format_date_modified(self, time_stamp):
+        return self.strftime(DATE_FORMAT, time.gmtime(time_stamp))
+
+    def _format_file_size(self, file_size):
+        return FILE_SIZE_FORMAT.format(file_size).replace(",", ".")
+
+
 def main():
     ls = Ls()
     print("args = ", ls.args)
