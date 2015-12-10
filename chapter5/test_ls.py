@@ -19,7 +19,7 @@ def getmtime(filename):
 
 
 def walk(directory):
-    return None
+    return [('./', [], ['ls.py'])]
 
 
 def strftime(DATE_FORMAT, time_stamp):
@@ -87,17 +87,24 @@ class TestLs(unittest.TestCase):
         actual_date_modified = self.ls._get_date_modified(file_name)
         self.assertEqual(expected_date_modified, actual_date_modified, "Datum laatste wijziging niet correct !")
 
-    def test_format_date_modified_werk_correct(self):
+    def test_format_date_modified_werkt_correct(self):
         """Functie _format_date_modified werk correct"""
         expected_date = DATE_MODIFIED
         actual_date = self.ls._format_date_modified(TIME)
         self.assertEqual(expected_date, actual_date, "Datum formaat niet correct !")
 
-    def test_format_file_size__werk_correct(self):
+    def test_format_file_size__werkt_correct(self):
         """Functie _format_file_size werk correct"""
         expected_size = FORMATTED_SIZE
         actual_size = self.ls._format_file_size(SIZE)
         self.assertEqual(expected_size, actual_size, "Formaat bestandsgrootte niet correct !")
+
+    def test_assemble_info_includes_sizes(self):
+        """Functie _assembe_info toont de grootte van het bestand"""
+        self.ls.args.sizes = True
+        expcted_info = ""
+        actual_info = self.ls._assemble_info(filename)
+        self.assertEqual(expcted_info, actual_info, "Grootte wordt niet getoond !")
 
 
 if __name__ == "__main__":

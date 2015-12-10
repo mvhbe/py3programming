@@ -4,7 +4,7 @@ import os.path
 import time
 
 
-DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
+DATE_FORMAT = "%Y-%m-%d %H:%M:%S "
 FILE_SIZE_FORMAT = "{:10,d}"
 
 
